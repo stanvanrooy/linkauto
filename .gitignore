@@ -1,0 +1,5 @@
+*.pyx
+*.pyc
+venv/
+main.py
+.idea/
