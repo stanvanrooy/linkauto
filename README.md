@@ -1,8 +1,8 @@
-# Instauto
+# Linkauto
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-[![GitHub stars](https://img.shields.io/github/stars/stanvanrooy/instauto)](https://github.com/stanvanrooy/linkauto/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/stanvanrooy/linkauto)](https://github.com/stanvanrooy/linkauto/stargazers)
 [![PyPI license](https://img.shields.io/pypi/l/linkauto)](https://pypi.python.org/project/linkauto/)
-[![Downloads](https://pepy.tech/badge/instauto/week)](https://pepy.tech/project/linkauto)
+[![Downloads](https://pepy.tech/badge/linkauto/week)](https://pepy.tech/project/linkauto)
 
 Linkauto is a Python package for automating various parts of LinkedIn, making use of the private LinkedIn API.
 
