@@ -11,7 +11,7 @@ setup(
   author_email='stan@rooy.dev',
   url='https://github.com/stanvanrooy/linkauto',
   download_url='https://github.com/stanvanrooy/linkauto/archive/0.0.1.tar.gz',
-  keywords=['instagram api', 'private instagram api'],
+  keywords=['linkedin api', 'private linkedin api'],
   install_requires=[
     'orjson',
     'aiohttp'
