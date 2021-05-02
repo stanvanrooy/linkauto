@@ -1,5 +1,6 @@
 *.pyx
 *.pyc
+*.swp
 venv/
 main.py
 .idea/
