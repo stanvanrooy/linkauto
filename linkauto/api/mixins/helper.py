@@ -22,7 +22,7 @@ class HelperMixin(StubMixin):
   def get_useragent(self) -> str:
     return f"{self.config.linkedin_app.appId}/{self.config.linkedin_app.clientMinorVersion} " \
            f"(Linux; U; {self.config.device.androidVersion}; {self.config.device.region}; " \
-           f"{self.config.device.model}; Build/NMF26Q; Cronet/{self.config.device.cronetVersion}"
+           f"{self.config.device.model}; Build/NMF26Q; Cronet/{self.config.device.cronetVersion})"
 
   def get_tracking_id(self) -> str:
     return base64.b64encode(uuid.uuid4().bytes).decode()
