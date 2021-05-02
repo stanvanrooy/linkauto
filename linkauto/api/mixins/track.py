@@ -1,14 +1,21 @@
 import aiohttp
 import orjson
+import aysncio
+import aioscheduler
+import random
+import datetime
 
 from linkauto.api.mixins.stub import StubMixin
+from linkauto.api.enums import TimestampType
 
 
 class TrackMixin(StubMixin):
-  async def start_track_mixin(self):
-    self.add_response_interceptor(self.set_tracking_headers)
-    self.add_response_interceptor(self.generate_network_event)
+  def __init__(self) -> None:
+    self._scheduler = aioscheduler.TimedScheduler()
+    self._scheduler.start()
+    self._schedule_timestamp_event()
 
+  async def start_track_mixin(self):
     # 1. This request retrieves some information necessary for all track requests.
     await self.get(
       'li/track',
@@ -30,10 +37,10 @@ class TrackMixin(StubMixin):
         'x-restli-protocol-version': '2.0.0'
       }
     )
+    
+    self.add_response_interceptor(self.set_tracking_headers)
+    self.add_response_interceptor(self._generate_network_event)
 
-  async def generate_network_event(self, _: aiohttp.ClientResponse):
-    # TODO: implement
-    pass
 
   async def generate_rum_event(self):
     # TODO: implement
@@ -68,3 +75,23 @@ class TrackMixin(StubMixin):
       "mpVersion": self.config.linkedin_app.mpVersion
     }
     return orjson.dumps(x_li_track).decode('utf8')
+
+  async def generate_network_event(self, _: aiohttp.ClientResponse):
+    # TODO: implement
+    pass
+
+  async def _generate_timestamp_event(self) -> None:
+    for _ in range(10):
+        url = "https://realtime.www.linkedin.com/realtime/realtimeFrontendTimestamp"
+        headers = {
+          'x-li-lang': self.config.linkedin_stored_data.li_lang
+        }
+        _ = self.get(url, headers=headers)
+        await asyncio.sleep(.750)
+
+  def _schedule_timestamp_event(self) -> None:
+    self._scheduler.schedule(
+      self._generate_timestamp_event(), 
+      datetime.utcnow() + timedelta(seconds=random.randint(100, 150)
+    )
+
