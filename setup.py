@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
   name='linkauto',
   packages=setuptools.find_packages(),
-  version='0.0.2',
+  version='0.0.4',
   license='MIT',
   description='Python wrapper for the private LinkedIn API',
   author='Stan van Rooy',
