@@ -1,13 +1,11 @@
 import aiohttp
 import orjson
-import aysncio
+import asyncio
 import aioscheduler
 import random
 import datetime
 
 from linkauto.api.mixins.stub import StubMixin
-from linkauto.api.enums import TimestampType
-
 
 class TrackMixin(StubMixin):
   def __init__(self) -> None:
@@ -33,7 +31,7 @@ class TrackMixin(StubMixin):
         'user-agent': self.get_useragent(),
         'x-li-page-instance': self.get_page_instance('p_flagship3_background'),
         'csrf-token': self.get_csrf_token(),
-        'x-udid': self.config.linkedin_stored_data.li_udid,
+        'x-udid': str(self.config.linkedin_stored_data.li_udid),
         'x-restli-protocol-version': '2.0.0'
       }
     )
@@ -41,6 +39,10 @@ class TrackMixin(StubMixin):
     self.add_response_interceptor(self.set_tracking_headers)
     self.add_response_interceptor(self._generate_network_event)
 
+
+  async def _generate_network_event(self, response: aiohttp.ClientResponse):
+    # TODO: implement
+    pass
 
   async def generate_rum_event(self):
     # TODO: implement
@@ -92,6 +94,6 @@ class TrackMixin(StubMixin):
   def _schedule_timestamp_event(self) -> None:
     self._scheduler.schedule(
       self._generate_timestamp_event(), 
-      datetime.utcnow() + timedelta(seconds=random.randint(100, 150)
+      datetime.datetime.utcnow() + datetime.timedelta(seconds=random.randint(100, 150))
     )
 

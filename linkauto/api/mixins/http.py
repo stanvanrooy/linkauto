@@ -12,15 +12,15 @@ logger = logging.getLogger(__name__)
 
 
 class HttpMixin(StubMixin):
-  _session: aiohttp.ClientSession = None
+  _session: aiohttp.ClientSession
   _response_interceptors: List[Callable[[aiohttp.ClientResponse], Coroutine]] = []
 
   def start_http_mixin(self):
     self._session = aiohttp.ClientSession(cookies={'JSESSIONID': self.generate_csrf_token()})
     self.add_response_interceptor(self._error_handler)
 
-  def stop_http_mixin(self):
-    self._session.close()
+  async def stop_http_mixin(self):
+    await self._session.close()
 
   def add_response_interceptor(self, c: Callable[[aiohttp.ClientResponse], Coroutine]):
     self._response_interceptors.append(c)
@@ -50,12 +50,12 @@ class HttpMixin(StubMixin):
                      send_json: bool = False
                      ) -> aiohttp.ClientResponse:
     url = self._prepare_url(url)
-    headers: Dict[str, str] = self._build_headers(headers, default_headers, default_headers_overwrite)
+    h: Dict[str, str] = self._build_headers(headers, default_headers, default_headers_overwrite)
     query_params = self._build_query_params(query_params or {})
     if page_instance is not None:
-      headers['x-li-page-instance'] = self.get_page_instance(page_instance)
+      h['x-li-page-instance'] = self.get_page_instance(page_instance)
     if accept_json:
-      headers['accept'] = 'application/vnd.linkedin.mobile.deduped+json'
+      h['accept'] = 'application/vnd.linkedin.mobile.deduped+json'
     if method.upper() == 'GET':
       if data is not None:
         logger.warning("You're sending a get request with data. The data will be ignored")
@@ -63,7 +63,7 @@ class HttpMixin(StubMixin):
     elif method.upper() == 'POST':
       if send_json:
         data = orjson.dumps(data)
-        headers['content-type'] = 'application/json'
+        h['content-type'] = 'application/json'
       response = await self._session.post(url, data=data, headers=headers, params=query_params)
     else:
       raise ValueError('Invalid method: %s', method)
@@ -114,7 +114,7 @@ class HttpMixin(StubMixin):
     return await self._request(url, 'POST', query_params=query_params, headers=headers, default_headers=default_headers,
                                accept_json=accept_json, page_instance=page_instance, data=data, send_json=send_json)
 
-  def _build_headers(self, headers: Dict[str, str], default_headers: bool, default_headers_overwrite: bool):
+  def _build_headers(self, headers: Optional[Dict[str, str]], default_headers: bool, default_headers_overwrite: bool):
     if not default_headers_overwrite:
       return {**(self._get_default_headers() if default_headers else {}), **(headers or {})}
     return {**(headers or {}), **(self._get_default_headers() if default_headers else {})}
@@ -126,7 +126,7 @@ class HttpMixin(StubMixin):
   def _get_default_headers(self) -> Dict[str, str]:
     return {
       'user-agent': self.get_useragent(),
-      'x-udid': self.config.linkedin_stored_data.li_udid,
+      'x-udid': str(self.config.linkedin_stored_data.li_udid),
       'csrf-token': self.get_csrf_token(),
       'x-restli-protocol-version': '2.0.0',
       'x-li-track': self.get_track_header(),
@@ -151,3 +151,4 @@ class HttpMixin(StubMixin):
     if login_result := as_json.get('login_result'):
       if login_result == 'BAD_PASSWORD':
         raise BadPasswordException()
+

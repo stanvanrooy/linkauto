@@ -22,4 +22,5 @@ class ApiClient(HttpMixin, TrackMixin, AuthMixin, HelperMixin, ProfileMixin, Rel
     await self.start_track_mixin()
 
   async def stop(self):
-    self.stop_http_mixin()
+    await self.stop_http_mixin()
+
