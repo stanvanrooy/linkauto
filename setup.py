@@ -13,8 +13,10 @@ setup(
   download_url='https://github.com/stanvanrooy/linkauto/archive/0.0.1.tar.gz',
   keywords=['linkedin api', 'private linkedin api'],
   install_requires=[
+    'asyncio'
     'orjson',
     'aiohttp'
+    'aioscheduler'
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',
