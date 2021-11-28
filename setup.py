@@ -4,13 +4,13 @@ from distutils.core import setup
 setup(
   name='linkauto',
   packages=setuptools.find_packages(),
-  version='0.0.5',
+  version='0.0.6',
   license='MIT',
   description='Python wrapper for the private LinkedIn API',
   author='Stan van Rooy',
   author_email='stan@rooy.dev',
   url='https://github.com/stanvanrooy/linkauto',
-  download_url='https://github.com/stanvanrooy/linkauto/archive/0.0.1.tar.gz',
+  download_url='https://github.com/stanvanrooy/linkauto/archive/0.0.6.tar.gz',
   keywords=['linkedin api', 'private linkedin api'],
   install_requires=[
     'asyncio'
